@@ -5,11 +5,14 @@ const session = require("express-session");
 const { v4: uuidv4 } = require("uuid");
 const router = require("./router.js");
 const mysql = require('mysql');
+const database = require("mime-db");
 
 //create connection
 const db = mysql.createConnection({
     host: 'localhost',
-    user : 'root'
+    user : 'root',
+    password : '',
+    database : 'Quiz_App'
 });
 
 //connect 
@@ -30,6 +33,27 @@ app.get('/createdb', (req, res) => {
         console.log(result)
         res.send('Database created...');
     });
+});
+
+// create Table 
+app.get('/createtable', (req, res) => {
+    let sql =
+      "CREATE TABLE users(id int AUTO_INCREMENT,first_name VARCHAR(50),last_name VARCHAR(50), email VARCHAR(100), password VARCHAR(100), role int, PRIMARY KEY(id))";
+    db.query(sql, (err, result) => {
+        if(err) throw err;
+        console.log(result);
+        res.send('Users table created...');
+    });
+});
+
+// drop table
+app.get('/droptable', (req, res) => {
+    let sql = "DROP TABLE users";
+    db.query(sql, (err, result) => {
+        if(err) throw err;
+        console.log(result);
+        res.send('users table deleted...');
+    })
 });
 
 
